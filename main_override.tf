@@ -27,7 +27,10 @@ variable "platform" {
 # the purpose here is to load *only* those modules necessary for your specific terraform 
 # options are "dev_nx1_rs", "dev_nx1_search", "dev_nx1_display"
 module "environment" {
-  default = "dev_nx1_rs"
+  variable "environment" { 
+    default = "dev_nx1_rs"
+  }
+  source = "./environment/${environment}.tf"
 }
 
 
@@ -39,6 +42,6 @@ module "environment" {
 ## DO NOT EDIT BELOW THESE LINES
 
 module "base" {
-  source = "./common"
+  source = "./base"
 }
 

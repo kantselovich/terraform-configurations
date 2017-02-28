@@ -45,3 +45,8 @@ Terraform environment vars
 * export TF_LOG="TRACE"   # set the amount of logging you want when running terraform  
 
 
+
+## HowTo ##  
+to create your own use a different environment buildout simply switch the link from the current "environment ->" to the 
+environment you'd like to build out.  e.g.
+environment -> dev_nx1_rs
