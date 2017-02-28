@@ -1,6 +1,6 @@
 ![picture alt](https://deepstream.io/blog/deployment-using-terraform/terraform.png)
 
-## Configuration and Installation ##
+## ***Configuration and Installation*** ##
 
 
 #### Go Notes ####
