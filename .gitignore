@@ -8,4 +8,6 @@ terraform-provider-netscaler
 tf-acc-external-data-source
 tools
 
+.terraform
+
 terraform.tfstate*
