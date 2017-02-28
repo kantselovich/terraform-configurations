@@ -1,20 +1,22 @@
-Required configs for Go and Terraform
+* [ Required configs for Go and Terraform ]
 
 
-Go requirements #
+Go Notes
 
 i had an issue when building off the hashicorp/terraform master and using the citrix-terraform-netscaler plugin.  had to
 use an older tagged version of hashicorp/terraform as there was an API version conflict w/ the terraform-provider-netscaler 
 plugin and terraform
 
 
-Terraform notes #
+Terraform Notes
 
 
-Terraform-provider-netscaler notes #
+Terraform-provider-netscaler Notes
 
-DNS names - seems like the terraform-provider-netscaler won't accept FQDN, only IP (gah)
+  DNS names - seems like the terraform-provider-netscaler won't accept FQDN, only IP (gah)
 
+
+Installation and Configuration
 environment vars
 export PATH=$PATH:~/go/bin
 export GOROOT=~/go
