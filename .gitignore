@@ -1,6 +1,5 @@
 
 bin
-override.tf
 gox
 stringer
 terraform
