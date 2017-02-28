@@ -1,3 +1,9 @@
 
 bin
 override.tf
+gox
+stringer
+terraform
+terraform-provider-netscaler
+tf-acc-external-data-source
+tools
