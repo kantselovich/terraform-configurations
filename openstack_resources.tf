@@ -19,10 +19,6 @@ resource "openstack_compute_instance_v2" "mediagateway-usa-web01" {
   metadata = "${var.apps_mediagateway}"
   user_data = "${file("modules/base_init.txt")}"
 
-  personality {
-    file = "/home/chuck.hilyard/go/work/bin/instance.txt"
-    content = "contents of instance.txt"
-  }
 
   network {
     name = "DEV_APP"
