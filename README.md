@@ -9,9 +9,20 @@
 
 #### Terraform Notes ####
 
+modules have context.  vars of the same name under different modules may coexist
+
+directory structure - what's the best way to organize for the user readability and keep it DRY? 
+/ ("root module")
+  modules /
+    dev-usa /
+      nodes /
+      lbs /
+      dns /
+      apps /
 
 
 #### Terraform-provider-netscaler Notes ####
+
 i had an issue when building off the hashicorp/terraform master and using the citrix-terraform-netscaler plugin.  had to
 use an older tagged version of hashicorp/terraform as there was an API version conflict w/ the terraform-provider-netscaler 
 plugin and terraform
@@ -20,6 +31,10 @@ plugin and terraform
 
 
 #### Environment Configuration ####
+
+git stuff
+* ignore ./.terraform (folder)
+* ignore bin
 
 Go environment vars
 * export PATH=$PATH:~/go/bin
@@ -31,16 +46,3 @@ Terraform environment vars
 
 
 
-git stuff
-* ignore ./.terraform (folder)
-* ignore bin
-
-
-directory structure - what's the best way to organize for the user readability and keep it DRY? 
-/ ("root module")
-  modules /
-    dev-usa /
-      nodes /
-      lbs /
-      dns /
-      apps /
