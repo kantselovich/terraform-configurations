@@ -1,3 +1,5 @@
+![picture alt](https://deepstream.io/blog/deployment-using-terraform/terraform.png)
+
 ## Configuration and Installation for Terraform, Go, and Terraform Providers ##
 
 
