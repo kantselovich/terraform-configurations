@@ -11,14 +11,14 @@
 
 modules have context.  vars of the same name under different modules may coexist
 
-directory structure - what's the best way to organize for the user readability and keep it DRY? 
+directory structure - what's the best way to organize for the user readability and keep it DRY?   
 /                   # root module" - has root module context  
-&nbsp;&nbsp; modules /         # these have individual module context  
-    dev-usa /
-      nodes /
-      lbs /
-      dns /
-      apps /
+modules /         # these have individual module context    
+    dev-usa /  
+      nodes / 
+      libs /  
+      dns /  
+      apps /  
 
 
 #### Terraform-provider-netscaler Notes ####
