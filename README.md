@@ -45,4 +45,3 @@ Terraform environment vars
 * export TF_LOG="TRACE"   # set the amount of logging you want when running terraform  
 
 
-
