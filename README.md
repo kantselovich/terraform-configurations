@@ -42,7 +42,5 @@ Terraform environment vars
 
 
 #### HowTo
-to create your own use a different environment buildout - simply switch the link from the current "environment ->" to the 
-environment you'd like to create.  e.g.  
-
-environment -> dev_nx1_rs
+to create your own environment copy a different environment buildout and make all the updates your environment needs.  switching
+to that environment requires you to update the main.tf: module "environment" 

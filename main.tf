@@ -3,7 +3,6 @@
 #
 # switch your environments around at this level
 
-
 terraform {
   required_version = "~> 0.8.5"
 }
