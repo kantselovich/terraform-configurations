@@ -41,6 +41,6 @@ Terraform environment vars
 
 
 
-#### HowTo
+#### How To
 to create your own environment copy a different environment buildout and make all the updates your environment needs.  switching
 to that environment requires you to update the main.tf: module "environment" 
