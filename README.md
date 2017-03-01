@@ -46,7 +46,7 @@ Terraform environment vars
 
 
 
-#### How To ####  
+#### HowTo
 to create your own use a different environment buildout - simply switch the link from the current "environment ->" to the 
 environment you'd like to create.  e.g.  
 
