@@ -1,5 +1,5 @@
 
-## provider provider provider provider provider provider provider provider provider provider provider provider provider
+#### provider 
 
 provider "netscaler" {
   username = "chuck.hilyard"
@@ -10,22 +10,18 @@ provider "netscaler" {
 
 
 
-## variables variables  variables  variables  variables  variables  variables  variables  variables  variables  variables 
-
-# why is this not prompting me?
-#variable "netscaler_password" {}
+#### local variables 
 
 
 
+#### resources 
 
-## resources resources  resources  resources  resources  resources  resources  resources  resources  resources  resources 
-#
 # naming convention
 # $anything.$env.$plat.$dc.reachlocal.com
 
 
 # **************************************************
-## csv servers (shared resources)    
+# csv servers (shared resources)    
 resource "netscaler_csvserver" "dcsvs-ws-nx1-dev-usa-wh" {
   name = "dcsvs-ws-nx1-dev-usa-wh"
   ipv46 = "10.126.255.238"
@@ -35,11 +31,12 @@ resource "netscaler_csvserver" "dcsvs-ws-nx1-dev-usa-wh" {
   sslcertkey = "reachlocal.com" 
 }
 
-resource "netscaler_cspolicy" "csp-nx1-dev-usa-ws-facebookshim" {
-  policyname = "csp-nx1-dev-usa-ws-facebookshim"
-  url = "*"
-  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-wh.name}"
+resource "netscaler_cspolicy" "csp-facebookshim-nx1-dev-usa-wh" {
+  policyname = "csp-facebookshim-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/facebookshim\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
   targetlbvserver = "${netscaler_lbvserver.dvs-facebookshim-nx1-dev-usa-wh.name}"
+  priority = 200
 }
 
 
@@ -60,7 +57,7 @@ resource "netscaler_servicegroup" "dsg-facebookshim-nx1-dev-usa-wh" {
   lbvserver = "dvs-facebookshim-nx1-dev-usa-wh"
   servicegroupname = "dsg-facebookshim-nx1-dev-usa-wh"
   servicetype = "HTTP"
-  servicegroupmembers = ["${openstack_compute_instance_v2.facebookshim-usa-web01.network.0.fixed_ip_v4}:80"]
+  servicegroupmembers = ["${openstack_compute_instance_v2.facebookshim-usa-web01.network.0.fixed_ip_v4}:8080"]
  }
 
 
