@@ -10,5 +10,6 @@ tools
 
 .terraform
 terraform.tfvars
+nx1_dev_rs/variables.tf
 
 terraform.tfstate*
