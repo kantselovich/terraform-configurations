@@ -109,4 +109,30 @@ resource "netscaler_servicegroup" "dsg-cpigateway-nx1-dev-usa-wh" {
   servicegroupmembers = ["${openstack_compute_instance_v2.cpigateway-usa-web01.network.0.fixed_ip_v4}:80"]
  }
 
+# **************************************************
+# mediagateway
+resource "netscaler_lbvserver" "dvs-mediagateway-nx1-dev-usa-wh" {
+  name = "dvs-mediagateway-nx1-dev-usa-wh"
+  servicetype = "SSL"
+  port = "443"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+  appflowlog = "DISABLED"
+  sslcertkey = "reachlocal.com" 
+ }
+
+resource "netscaler_servicegroup" "dsg-mediagateway-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-mediagateway-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.mediagateway-usa-web01"]
+  lbvserver = "dvs-mediagateway-nx1-dev-usa-wh"
+  servicegroupname = "dsg-mediagateway-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.mediagateway-usa-web01.network.0.fixed_ip_v4}:8080"]
+  monitorname = "http-up"
+ }
+
+
+
+
+
 
