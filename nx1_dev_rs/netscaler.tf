@@ -1,4 +1,6 @@
 
+## provider provider provider provider provider provider provider provider provider provider provider provider provider
+
 provider "netscaler" {
   username = "chuck.hilyard"
   password = "${var.netscaler_password}"
@@ -9,65 +11,76 @@ provider "netscaler" {
 
 
 ## variables variables  variables  variables  variables  variables  variables  variables  variables  variables  variables 
-## variables variables  variables  variables  variables  variables  variables  variables  variables  variables  variables 
-## variables variables  variables  variables  variables  variables  variables  variables  variables  variables  variables 
 
 # why is this not prompting me?
-variable "netscaler_password" {}
+#variable "netscaler_password" {}
 
 
 
 
 ## resources resources  resources  resources  resources  resources  resources  resources  resources  resources  resources 
-## resources resources  resources  resources  resources  resources  resources  resources  resources  resources  resources 
-## resources resources  resources  resources  resources  resources  resources  resources  resources  resources  resources 
+#
+# naming convention
+# $anything.$env.$plat.$dc.reachlocal.com
 
 
-## csv servers    csv servers    csv servers    csv servers    csv servers    csv servers    csv servers    csv servers
-## 
-## these are shared resources
-resource "netscaler_csvserver" "dvs-cs-wh-nx1-dev-ws-reachlocal-ssl" {
-  name = "dvs-cs-wh-nx1-dev-ws-reachlocal-ssl"
+# **************************************************
+## csv servers (shared resources)    
+resource "netscaler_csvserver" "dcsvs-ws-nx1-dev-usa-wh" {
+  name = "dcsvs-ws-nx1-dev-usa-wh"
   ipv46 = "10.126.255.238"
   port = "443" 
   servicetype = "SSL"
-  sslcertkey = "qa.reachlocal.com" 
+  clttimeout = "180"
+  sslcertkey = "reachlocal.com" 
 }
 
 resource "netscaler_cspolicy" "csp-nx1-dev-usa-ws-facebookshim" {
   policyname = "csp-nx1-dev-usa-ws-facebookshim"
   url = "*"
-  csvserver = "${netscaler_csvserver.dvs-cs-wh-nx1-dev-ws-reachlocal-ssl.name}"
-  targetlbvserver = "${netscaler_lbvserver.dvs-nx1-dev-usa-facebookshim-http.name}"
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-facebookshim-nx1-dev-usa-wh.name}"
 }
 
 
+
+# **************************************************
 # facebookshim
-resource "netscaler_lbvserver" "dvs-nx1-dev-usa-facebookshim-http" {
-  name = "dvs-nx1-dev-usa-facebookshim-http"
+resource "netscaler_lbvserver" "dvs-facebookshim-nx1-dev-usa-wh" {
+  name = "dvs-facebookshim-nx1-dev-usa-wh"
   servicetype = "HTTP"
   lbmethod = "ROUNDROBIN"
   persistencetype = "NONE"
   clttimeout = "3600"
  }
 
+resource "netscaler_servicegroup" "dsg-facebookshim-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-facebookshim-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.facebookshim-usa-web01"]
+  lbvserver = "dvs-facebookshim-nx1-dev-usa-wh"
+  servicegroupname = "dsg-facebookshim-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.facebookshim-usa-web01.network.0.fixed_ip_v4}:80"]
+ }
 
+
+# **************************************************
 # cpigateway
-resource "netscaler_servicegroup" "dsg-nx1-dev-wh-cpigatewayservice" {
-  depends_on = ["netscaler_lbvserver.dvs-nx1-dev-wh-cpigatewayservice"]
+resource "netscaler_lbvserver" "dvs-cpigateway-nx1-dev-usa-wh" {
+  name = "dvs-cpigateway-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "ROUNDROBIN"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+ }
+
+resource "netscaler_servicegroup" "dsg-cpigateway-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-cpigateway-nx1-dev-usa-wh"]
   depends_on = ["openstack_compute_instance_v2.cpigateway-usa-web01"]
-  lbvserver = "dvs-nx1-dev-wh-cpigatewayservice"
-  servicegroupname = "dsg-nx1-dev-wh-cpigatewayservice"
+  lbvserver = "dvs-cpigateway-nx1-dev-usa-wh"
+  servicegroupname = "dsg-cpigateway-nx1-dev-usa-wh"
   servicetype = "HTTP"
   servicegroupmembers = ["${openstack_compute_instance_v2.cpigateway-usa-web01.network.0.fixed_ip_v4}:80"]
- }
-
-resource "netscaler_lbvserver" "dvs-nx1-dev-wh-cpigatewayservice" {
-  name = "dvs-nx1-dev-wh-cpigatewayservice"
-  servicetype = "HTTP"
-  lbmethod = "ROUNDROBIN"
-  persistencetype = "NONE"
-  clttimeout = "3600"
  }
 
 

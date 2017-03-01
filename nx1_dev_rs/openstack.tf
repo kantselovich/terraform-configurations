@@ -1,4 +1,9 @@
 
+## provider provider provider provider provider provider provider provider provider provider provider provider provider 
+## provider provider provider provider provider provider provider provider provider provider provider provider provider 
+## provider provider provider provider provider provider provider provider provider provider provider provider provider 
+
+
 # Configure the OpenStack Provider
 provider "openstack" {
   user_name  = "chuck.hilyard"
@@ -15,7 +20,7 @@ provider "openstack" {
 ## variables variables variables variables variables variables variables variables variables variables variables variables
 ## variables variables variables variables variables variables variables variables variables variables variables variables
 
-variable "openstack_password" {}
+#variable "openstack_password" {}
 
 # this is specifically for mediagateway node builds
 variable "apps_mediagateway" {
@@ -175,15 +180,6 @@ resource "openstack_compute_instance_v2" "mediagateway-usa-web01" {
   }
 
 }
-
-
-
-
-
-
-## resources
-## resources
-## resources
 
 # Create servers
 resource "openstack_compute_instance_v2" "cpigateway-usa-web01" {
