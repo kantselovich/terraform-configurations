@@ -113,8 +113,10 @@ resource "netscaler_servicegroup" "dsg-cpigateway-nx1-dev-usa-wh" {
 # mediagateway
 resource "netscaler_lbvserver" "dvs-mediagateway-nx1-dev-usa-wh" {
   name = "dvs-mediagateway-nx1-dev-usa-wh"
-  servicetype = "SSL"
+  ipv46 = "10.125.255.237"
   port = "443"
+  servicetype = "SSL"
+  lbmethod = "ROUNDROBIN"
   persistencetype = "NONE"
   clttimeout = "3600"
   appflowlog = "DISABLED"
@@ -128,7 +130,7 @@ resource "netscaler_servicegroup" "dsg-mediagateway-nx1-dev-usa-wh" {
   servicegroupname = "dsg-mediagateway-nx1-dev-usa-wh"
   servicetype = "HTTP"
   servicegroupmembers = ["${openstack_compute_instance_v2.mediagateway-usa-web01.network.0.fixed_ip_v4}:8080"]
-  monitorname = "http-up"
+  lbmonitor = "http-up"
  }
 
 
