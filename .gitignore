@@ -9,5 +9,6 @@ tf-acc-external-data-source
 tools
 
 .terraform
+terraform.tfvars
 
 terraform.tfstate*
