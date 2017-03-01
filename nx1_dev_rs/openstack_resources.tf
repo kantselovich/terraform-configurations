@@ -19,6 +19,23 @@ resource "openstack_compute_instance_v2" "mediagateway-usa-web01" {
   metadata = "${var.apps_mediagateway}"
   user_data = "${file("base/base_init.txt")}"
 
+  network {
+    name = "DEV_APP"
+  }
+
+  network {
+    name = "DEV_STOR"
+  }
+}
+
+# Create servers
+resource "openstack_compute_instance_v2" "mediagateway-usa-web02" {
+  name = "mediagateway-usa-web02.${var.domain}"
+  image_name = "${var.image_name}"
+  flavor_id = "2"
+  key_pair = "chilyard"
+  metadata = "${var.apps_mediagateway}"
+  user_data = "${file("base/base_init.txt")}"
 
   network {
     name = "DEV_APP"
@@ -27,6 +44,4 @@ resource "openstack_compute_instance_v2" "mediagateway-usa-web01" {
   network {
     name = "DEV_STOR"
   }
-
 }
-

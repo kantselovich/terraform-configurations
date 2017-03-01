@@ -25,8 +25,7 @@ resource "netscaler_servicegroup" "dsg-nx1-dev-wh-cpigatewayservice" {
   #   add server cpigateway-aus-web01.syd.reachlocal.com cpigateway-aus-web01.syd.reachlocal.com
   #   rm server cpigateway-aus-web01.syd.reachlocal.com  
   #
-  #servicegroupmembers = ["${var.dedicated_ips.["cpigatewayservice.node01"]}:80", "${var.dedicated_ips["cpigatewayservice.node02"]}:80" ]
-  servicegroupmembers = ["${openstack_compute_instance_v2.mediagateway-usa-web01.network.0.fixed_ip_v4}:80" ]
+  servicegroupmembers = ["${openstack_compute_instance_v2.mediagateway-usa-web01.network.0.fixed_ip_v4}:80", "${openstack_compute_instance_v2.mediagateway-usa-web02.network.0.fixed_ip_v4}:80" ]
  }
 
 resource "netscaler_lbvserver" "dvs-nx1-dev-wh-cpigatewayservice" {
