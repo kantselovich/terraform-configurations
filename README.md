@@ -42,11 +42,12 @@ Go environment vars
 * export GOPATH=~/go/work
 
 Terraform environment vars
-* export TF_LOG="TRACE"   # set the amount of logging you want when running terraform  
+* export TFLOG="TRACE"   # set the amount of logging you want when running terraform  
 
 
 
 #### HowTo ####  
-to create your own use a different environment buildout simply switch the link from the current "environment ->" to the 
-environment you'd like to build out.  e.g.
+to create your own use a different environment buildout - simply switch the link from the current "environment ->" to the 
+environment you'd like to create.  e.g.  
+
 environment -> dev_nx1_rs
