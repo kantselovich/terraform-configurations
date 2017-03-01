@@ -1,8 +1,5 @@
 
 ## provider provider provider provider provider provider provider provider provider provider provider provider provider 
-## provider provider provider provider provider provider provider provider provider provider provider provider provider 
-## provider provider provider provider provider provider provider provider provider provider provider provider provider 
-
 
 # Configure the OpenStack Provider
 provider "openstack" {
@@ -17,10 +14,10 @@ provider "openstack" {
 
 
 ## variables variables variables variables variables variables variables variables variables variables variables variables
-## variables variables variables variables variables variables variables variables variables variables variables variables
-## variables variables variables variables variables variables variables variables variables variables variables variables
 
-#variable "openstack_password" {}
+variable image_name {
+  default = "Ubuntu 12.04.5 LTS"
+}
 
 # this is specifically for mediagateway node builds
 variable "apps_mediagateway" {
@@ -150,17 +147,19 @@ variable "apps_cpi_recommendations_service" {
   }
 }
 
-variable image_name {
-  default = "Ubuntu 12.04.5 LTS"
+# this is specifically for mediagateway node builds
+variable "apps_facebook_shim" {
+  type = "map"
+  default = {
+    puppetClasses = "apps_facebook_shim" 
+    puppetEnv = "dev_nx1_media"
+    puppetVars = "platform=usa|service=facebookshim|sub=app"
+  }
 }
 
 
 
-
 # resources resources resources resources resources resources resources resources resources resources resources resources
-# resources resources resources resources resources resources resources resources resources resources resources resources
-# resources resources resources resources resources resources resources resources resources resources resources resources
-
 
 # Create servers
 resource "openstack_compute_instance_v2" "mediagateway-usa-web01" {
@@ -406,6 +405,25 @@ resource "openstack_compute_instance_v2" "cpirecommendations-usa-web01" {
 
   network {
     name = "DEV_WDMZSTOR"
+  }
+
+}
+
+# Create servers
+resource "openstack_compute_instance_v2" "facebookshim-usa-web01" {
+  name = "facebookshim-usa-web01.${var.domain}"
+  image_name = "${var.image_name}"
+  flavor_id = "2"
+  key_pair = "chilyard"
+  metadata = "${var.apps_facebook_shim}"
+  user_data = "${file("base/base_init.txt")}"
+
+  network {
+    name = "DEV_APP"
+  }
+
+  network {
+    name = "DEV_STOR"
   }
 
 }
