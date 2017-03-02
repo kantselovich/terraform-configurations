@@ -21,7 +21,7 @@ provider "netscaler" {
 
 
 # **************************************************
-# csv servers (shared resources)    
+# ws csv server (shared resources)    
 #
 # notes
 # priority must be unique
@@ -51,6 +51,60 @@ resource "netscaler_cspolicy" "csp-campaignservice-nx1-dev-usa-wh" {
   priority = "201"
 }
 
+resource "netscaler_cspolicy" "csp-googleconnector-nx1-dev-usa-wh" {
+  policyname = "csp-googleconnector-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/googleconnector\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-googleconnector-nx1-dev-usa-wh.name}"
+  priority = "202"
+}
+
+resource "netscaler_cspolicy" "csp-bingconnector-nx1-dev-usa-wh" {
+  policyname = "csp-bingconnector-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/bingconnector\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-bingconnector-nx1-dev-usa-wh.name}"
+  priority = "203"
+}
+
+resource "netscaler_cspolicy" "csp-optimization-nx1-dev-usa-wh" {
+  policyname = "csp-optimization-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/optimization\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-optimization-nx1-dev-usa-wh.name}"
+  priority = "204"
+}
+
+resource "netscaler_cspolicy" "csp-advertiserservice-nx1-dev-usa-wh" {
+  policyname = "csp-advertiserservice-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/advertiser-service\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-advertiserservice-nx1-dev-usa-wh.name}"
+  priority = "205"
+}
+
+# **************************************************
+# api csv server (shared resources)    
+#
+# notes
+# priority must be unique
+#
+resource "netscaler_csvserver" "dcsvs-api-nx1-dev-usa-wh" {
+  name = "dcsvs-api-nx1-dev-usa-wh"
+  ipv46 = "10.125.255.236"
+  port = "443" 
+  servicetype = "SSL"
+  clttimeout = "180"
+  sslcertkey = "reachlocal.com" 
+}
+
+resource "netscaler_cspolicy" "csp-yelpconnector-nx1-dev-usa-wh" {
+  policyname = "csp-yelpconnector-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/yelpconnector\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-api-nx1-dev-usa-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-yelpconnector-nx1-dev-usa-wh.name}"
+  priority = "200"
+}
 
 
 # **************************************************
@@ -165,8 +219,102 @@ resource "netscaler_servicegroup" "dsg-campaignservice-nx1-dev-usa-wh" {
   lbmonitor = "ws-campaign-http-8443"
  }
 
+# **************************************************
+# yelpconnector
+resource "netscaler_lbvserver" "dvs-yelpconnector-nx1-dev-usa-wh" {
+  name = "dvs-yelpconnector-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "LEASTCONNECTION"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+ }
 
+resource "netscaler_servicegroup" "dsg-yelpconnector-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-yelpconnector-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.yelpconnector-usa-web01"]
+  lbvserver = "dvs-yelpconnector-nx1-dev-usa-wh"
+  servicegroupname = "dsg-yelpconnector-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.yelpconnector-usa-web01.network.0.fixed_ip_v4}:8080"]
+  lbmonitor = ""
+ }
 
+# **************************************************
+# googleconnector
+resource "netscaler_lbvserver" "dvs-googleconnector-nx1-dev-usa-wh" {
+  name = "dvs-googleconnector-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "ROUNDROBIN"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+ }
 
+resource "netscaler_servicegroup" "dsg-googleconnector-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-googleconnector-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.googleconnector-usa-web01"]
+  lbvserver = "dvs-googleconnector-nx1-dev-usa-wh"
+  servicegroupname = "dsg-googleconnector-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.googleconnector-usa-web01.network.0.fixed_ip_v4}:8080"]
+  lbmonitor = ""
+ }
 
+# **************************************************
+# bingconnector
+resource "netscaler_lbvserver" "dvs-bingconnector-nx1-dev-usa-wh" {
+  name = "dvs-bingconnector-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "ROUNDROBIN"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+  #policyname = "mkg_insert_https_proto_header"
+ }
+
+resource "netscaler_servicegroup" "dsg-bingconnector-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-bingconnector-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.bingconnector-usa-web01"]
+  lbvserver = "dvs-bingconnector-nx1-dev-usa-wh"
+  servicegroupname = "dsg-bingconnector-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.bingconnector-usa-web01.network.0.fixed_ip_v4}:8080"]
+ }
+
+# **************************************************
+# optimization
+resource "netscaler_lbvserver" "dvs-optimization-nx1-dev-usa-wh" {
+  name = "dvs-optimization-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "ROUNDROBIN"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+  #policyname = "mkg_insert_https_proto_header"
+ }
+
+resource "netscaler_servicegroup" "dsg-optimization-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-optimization-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.optimization-usa-web01"]
+  lbvserver = "dvs-optimization-nx1-dev-usa-wh"
+  servicegroupname = "dsg-optimization-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.optimization-usa-web01.network.0.fixed_ip_v4}:8080"]
+ }
+
+# **************************************************
+# advertiserservice
+resource "netscaler_lbvserver" "dvs-advertiserservice-nx1-dev-usa-wh" {
+  name = "dvs-advertiserservice-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "LEASTCONNECTION"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+ }
+
+resource "netscaler_servicegroup" "dsg-advertiserservice-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-advertiserservice-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.advertiserservice-usa-web01"]
+  lbvserver = "dvs-advertiserservice-nx1-dev-usa-wh"
+  servicegroupname = "dsg-advertiserservice-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.advertiserservice-usa-web01.network.0.fixed_ip_v4}:8080"]
+ }
 

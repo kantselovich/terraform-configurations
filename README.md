@@ -24,6 +24,7 @@ plugin and terraform
 
   * DNS names - seems like the terraform-provider-netscaler won't accept FQDN, only IP.  the workaround here is to set a dependency
   on the node being created for the lb vserver.  the lb vserver won't be created until the node is built and the nodes ip is set.
+  * rewrite policies - not certain how to get them bound
 
 
 #### Environment Configuration ####
