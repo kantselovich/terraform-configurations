@@ -22,6 +22,10 @@ provider "netscaler" {
 
 # **************************************************
 # csv servers (shared resources)    
+#
+# notes
+# priority must be unique
+#
 resource "netscaler_csvserver" "dcsvs-ws-nx1-dev-usa-wh" {
   name = "dcsvs-ws-nx1-dev-usa-wh"
   ipv46 = "10.125.255.238"
@@ -37,6 +41,14 @@ resource "netscaler_cspolicy" "csp-facebookshim-nx1-dev-usa-wh" {
   csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
   targetlbvserver = "${netscaler_lbvserver.dvs-facebookshim-nx1-dev-usa-wh.name}"
   priority = "200"
+}
+
+resource "netscaler_cspolicy" "csp-campaignservice-nx1-dev-usa-wh" {
+  policyname = "csp-campaignservice-nx1-dev-usa-wh"
+  rule = "HTTP.REQ.URL.PATH.STARTSWITH(\"/campaign\")"    # <- this is close, the escapes may not work
+  csvserver = "${netscaler_csvserver.dcsvs-ws-nx1-dev-usa-wh.name}"
+  targetlbvserver = "${netscaler_lbvserver.dvs-campaignservice-nx1-dev-usa-wh.name}"
+  priority = "201"
 }
 
 
@@ -131,6 +143,26 @@ resource "netscaler_servicegroup" "dsg-mediagateway-nx1-dev-usa-wh" {
   servicetype = "HTTP"
   servicegroupmembers = ["${openstack_compute_instance_v2.mediagateway-usa-web01.network.0.fixed_ip_v4}:8080"]
   lbmonitor = "http-up"
+ }
+
+# **************************************************
+# campaignservice
+resource "netscaler_lbvserver" "dvs-campaignservice-nx1-dev-usa-wh" {
+  name = "dvs-campaignservice-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  lbmethod = "LEASTCONNECTION"
+  persistencetype = "NONE"
+  clttimeout = "3600"
+ }
+
+resource "netscaler_servicegroup" "dsg-campaignservice-nx1-dev-usa-wh" {
+  depends_on = ["netscaler_lbvserver.dvs-campaignservice-nx1-dev-usa-wh"]
+  depends_on = ["openstack_compute_instance_v2.campaignservice-usa-web01"]
+  lbvserver = "dvs-campaignservice-nx1-dev-usa-wh"
+  servicegroupname = "dsg-campaignservice-nx1-dev-usa-wh"
+  servicetype = "HTTP"
+  servicegroupmembers = ["${openstack_compute_instance_v2.campaignservice-usa-web01.network.0.fixed_ip_v4}:8443"]
+  lbmonitor = "ws-campaign-http-8443"
  }
 
 
